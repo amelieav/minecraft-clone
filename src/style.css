@@ -4,6 +4,12 @@
   font-family: "Space Grotesk", "Segoe UI", sans-serif;
   color: #111;
   background: #f2efe9;
+  --ink: #1a221f;
+  --ink-soft: #32403a;
+  --panel: rgba(255, 252, 245, 0.9);
+  --panel-border: rgba(50, 66, 58, 0.18);
+  --accent: #cf9e47;
+  --slot-bg: #f3ebda;
 }
 
 * {
@@ -16,14 +22,17 @@ body {
 
 #app {
   min-height: 100vh;
-  background: radial-gradient(circle at top, #f7f1df, #e6e0d0 45%, #cbd7d6 100%);
+  background:
+    radial-gradient(1300px 620px at 8% -8%, rgba(255, 243, 198, 0.6), transparent 66%),
+    radial-gradient(1200px 700px at 95% 110%, rgba(133, 172, 196, 0.46), transparent 74%),
+    linear-gradient(165deg, #e8dfcc 0%, #d5d9cf 40%, #bccdd1 100%);
 }
 
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  color: #151515;
+  color: var(--ink);
 }
 
 .topbar {
@@ -33,7 +42,8 @@ body {
   padding: 16px 24px;
   background: linear-gradient(135deg, #2d3c30, #1b2320);
   color: #f8f4e8;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
 }
 
 .title {
@@ -46,6 +56,14 @@ body {
   display: flex;
   gap: 16px;
   font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.stats > div {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .game {
@@ -57,15 +75,30 @@ body {
 }
 
 .game-canvas {
+  display: block;
   width: 100%;
+  min-height: 480px;
   height: auto;
   border-radius: 18px;
-  border: 3px solid #1b2320;
+  border: 2px solid rgba(15, 22, 19, 0.78);
   background: #9fd3ff;
-  box-shadow: 0 20px 40px rgba(16, 24, 32, 0.25);
+  box-shadow:
+    0 24px 40px rgba(12, 18, 24, 0.32),
+    0 0 0 6px rgba(255, 246, 226, 0.38);
   image-rendering: pixelated;
   cursor: crosshair;
   touch-action: none;
+}
+
+.hud-row.error {
+  border-color: rgba(160, 38, 38, 0.28);
+  background: rgba(255, 236, 236, 0.9);
+}
+
+.error-text {
+  font-size: 13px;
+  color: #7c1717;
+  word-break: break-word;
 }
 
 .hud {
@@ -74,14 +107,20 @@ body {
   gap: 20px;
   padding: 18px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 12px 24px rgba(16, 24, 32, 0.18);
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 12px 24px rgba(16, 24, 32, 0.16);
 }
 
 .hud-row {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 12px 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(50, 66, 58, 0.14);
+  background: rgba(255, 255, 255, 0.54);
 }
 
 .label {
@@ -89,7 +128,7 @@ body {
   text-transform: uppercase;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: #4a5b55;
+  color: #4b5e57;
 }
 
 .hotbar {
@@ -100,9 +139,9 @@ body {
 
 .slot {
   position: relative;
-  border: 2px solid #2d3c30;
+  border: 1px solid #2d3c30;
   border-radius: 12px;
-  background: #f6efe1;
+  background: var(--slot-bg);
   padding: 10px;
   text-align: left;
   cursor: pointer;
@@ -112,7 +151,8 @@ body {
 .slot.active {
   transform: translateY(-2px);
   box-shadow: 0 8px 16px rgba(36, 50, 44, 0.35);
-  border-color: #c78c3b;
+  border-color: var(--accent);
+  background: #fbf3de;
 }
 
 .slot-name {
@@ -139,7 +179,7 @@ body {
   justify-content: space-between;
   padding: 8px 10px;
   border-radius: 10px;
-  background: #f6efe1;
+  background: var(--slot-bg);
   border: 1px solid #d3c8af;
 }
 
@@ -151,12 +191,18 @@ body {
 
 .craft-btn {
   border: 0;
-  background: #2d3c30;
+  background: linear-gradient(135deg, #2d3c30, #1e2a26);
   color: #f8f4e8;
   padding: 10px 14px;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.craft-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 
 .craft-btn:disabled {
@@ -169,16 +215,35 @@ body {
   grid-template-columns: 1fr;
   gap: 6px;
   font-size: 13px;
-  color: #32403a;
+  color: var(--ink-soft);
 }
 
 @media (max-width: 980px) {
   .game {
     grid-template-columns: 1fr;
+    padding: 14px;
   }
 
   .stats {
+    gap: 8px;
+  }
+
+  .topbar {
     flex-direction: column;
-    gap: 6px;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .hotbar {
+    grid-template-columns: repeat(3, minmax(80px, 1fr));
+  }
+
+  .inventory {
+    grid-template-columns: 1fr;
   }
 }
